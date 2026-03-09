@@ -1,5 +1,6 @@
 import { Search } from "lucide-react"
 
+
 export default function SearchBar() {
   return (
     <div className="flex-1 max-w-md ml-4">

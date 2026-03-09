@@ -13,6 +13,7 @@ class EmployeeSerializer(serializers.Serializer):
 
     fullname = serializers.CharField(max_length=255)
     email = serializers.EmailField()
+    role=serializers.CharField(max_length=20,default="Employee")
     phone = serializers.CharField(max_length=255)
     password = serializers.CharField(write_only=True)
 
@@ -22,16 +23,17 @@ class EmployeeSerializer(serializers.Serializer):
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])
 
-        # Generate username from email
+       
         if not validated_data.get("username"):
             validated_data["username"] = validated_data["email"]
 
         return Employee.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.username = validated_data.get("username", instance.username)
+        # instance.username = validated_data.get("username", instance.username)
         instance.fullname = validated_data.get("fullname", instance.fullname)
         instance.email = validated_data.get("email", instance.email)
+        instance.role=validated_data.get("role",instance.role)
         instance.phone = validated_data.get("phone", instance.phone)
 
         if "password" in validated_data:

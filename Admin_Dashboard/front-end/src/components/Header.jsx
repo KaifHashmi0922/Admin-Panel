@@ -14,11 +14,11 @@ export default function DashboardHeader({ onMobileMenuToggle, children }) {
         </button>
 
         {/* Breadcrumb */}
-        <div className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-600 bg-slate-100/60 px-4 py-2 rounded-xl backdrop-blur-sm">
+        {/* <div className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-600 bg-slate-100/60 px-4 py-2 rounded-xl backdrop-blur-sm">
           <span>Dashboard</span>
           <span className="text-slate-400">/</span>
           <span className="text-slate-900 font-semibold">Overview</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Right: Navbar children */}

@@ -69,13 +69,13 @@ function useRegister() {
 
       const { confirm_Password, ...payload } = formData;
 
-      await AuthServices.EmployeeCreate(payload);
-      alert("sdafsf")
+      const rep=await AuthServices.EmployeeCreate(payload);
+      console.log(rep)
 
-      
-      con
+      alert("reposnes")
+  
       if (isDashboard) {
-        navigate("/dashboard/employee/display");
+        navigate("/dashboard/employees-list");
       } else {
         localStorage.setItem("email", payload.email);
         navigate("/dashboard");

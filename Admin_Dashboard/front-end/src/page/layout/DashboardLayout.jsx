@@ -5,12 +5,15 @@ import DashboardHeader from "../../components/Header"
 import Navbar from "../../components/Navbar"
 import { roleDashboard } from "../../config/roleConfig"
 import { useAuth } from "../../context/AuthContext"
+import { useLayout } from "../../api/hooks/Layout/useLayout"
 
 export default function DashboardLayout() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sidebarHidden, setSidebarHidden] = useState(false)
+  const {data,loading,logout}=useLayout();
 
+  
   const { user } = useAuth()
 
   const RoleDashboard = roleDashboard[user?.role] || roleDashboard["guest"]
@@ -28,12 +31,14 @@ export default function DashboardLayout() {
         bg-white/80 backdrop-blur-xl z-50 transition-all duration-500
         ${sidebarHidden ? 'w-16 lg:w-16' : 'w-full lg:w-72'}
       `}>
-        <Sidebar 
-          userRole={user?.role}
+        <Sidebar   
+          UserRole={data?.role.toLowerCase()}
           isMobileMenuOpen={mobileMenuOpen} 
           onMobileMenuClose={() => setMobileMenuOpen(false)}
           isHidden={sidebarHidden}
           onToggleHide={() => setSidebarHidden(!sidebarHidden)}
+          logout={logout}
+          data={data}
         />
       </aside>
 

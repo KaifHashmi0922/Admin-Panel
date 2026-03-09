@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   EmailInputBox,
@@ -7,21 +7,31 @@ import {
   DateInputBox
 } from "../../components/InputBox";
 import { Button } from "../../components/Button";
-import { User, Mail, Phone, Briefcase, Calendar, ShieldCheck, ArrowLeft, Play, PauseCircle } from "lucide-react";
-import useEmployeeUpdate from "../../api/hooks/Employee/useEmployeeUpdate";
+import {
+  User,
+  Mail,
+  Phone,
+  Briefcase,
+  Calendar,
+  Play,
+  PauseCircle,
+  ArrowLeft
+} from "lucide-react";
+import useEmployeeUpdate from "../../api/hooks/Employee/useEmployeeEdit";
 
 export default function EmployeeEdit() {
-  const { id } = useParams();
+  const { email} = useParams();
   const navigate = useNavigate();
-  
+
   const {
     formData,
-    handleChange, 
+    handleChange,
     handleSubmit,
     Cancel,
     toggleStatus,
+    loading,
     employee
-  } = useEmployeeUpdate();
+  } = useEmployeeUpdate(email);
 
   const handleCancel = () => {
     if (Cancel) {
@@ -30,6 +40,20 @@ export default function EmployeeEdit() {
       navigate(-1);
     }
   };
+
+  // Determine active status based on the data
+const isActive = formData?.status === "active";
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading employee details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 px-4 py-12">
@@ -51,7 +75,7 @@ export default function EmployeeEdit() {
             
             <div>
               <h1 className="text-3xl lg:text-4xl font-black text-slate-900 mb-2 bg-gradient-to-r from-slate-900 to-slate-800 bg-clip-text">
-                Edit Employee <span className="text-blue-600">✏️</span>
+                Edit Employee ✏️
               </h1>
               <p className="text-slate-600 text-sm lg:text-base max-w-sm mx-auto">
                 Update {formData.fullname || "employee"} information securely
@@ -60,7 +84,7 @@ export default function EmployeeEdit() {
           </div>
 
           {/* Form */}
-          <form className="space-y-6" onSubmit={handleSubmit}>
+         <form className="space-y-6" onSubmit={handleSubmit}>
             
             {/* Full Name */}
             <div className="relative group">
@@ -131,16 +155,14 @@ export default function EmployeeEdit() {
               />
             </div>
 
-            {/* ✨ COMPACT STATUS TOGGLE - WORKING PERFECTLY */}
+            {/* Status Toggle */}
             <div className="bg-gradient-to-r from-slate-50/60 to-blue-50/60 backdrop-blur-xl p-5 lg:p-6 rounded-2xl border border-slate-200/50 shadow-lg">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className={`p-2.5 rounded-xl backdrop-blur-sm shadow-md ${
-                    employee?.active 
-                      ? 'bg-blue-100/80' 
-                      : 'bg-orange-100/80'
+                    isActive ? 'bg-blue-100/80' : 'bg-orange-100/80'
                   }`}>
-                    {employee?.active ? (
+                    {isActive ? (
                       <Play className="w-5 h-5 text-blue-600" />
                     ) : (
                       <PauseCircle className="w-5 h-5 text-orange-600" />
@@ -149,39 +171,36 @@ export default function EmployeeEdit() {
                   <div>
                     <h4 className="text-lg font-bold text-slate-900">Account Status</h4>
                     <p className="text-slate-600 text-xs">
-                      {employee?.active ? "Employee is active" : "Employee is inactive"}
+                      {isActive ? "Employee is active" : "Employee is inactive"}
                     </p>
                   </div>
                 </div>
                 
-                {/* ✅ FIXED TOGGLE BUTTON */}
                 <button
                   type="button"
                   onClick={toggleStatus}
                   className={`relative h-8 w-20 rounded-full p-1 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden ${
-                    employee?.active 
-                      ? 'bg-blue-500 shadow-blue-500/40' 
-                      : 'bg-orange-400 shadow-orange-400/40'
+                    isActive ? 'bg-blue-500 shadow-blue-500/40' : 'bg-orange-400 shadow-orange-400/40'
                   }`}
                 >
                   {/* Text Labels */}
                   <div className="absolute inset-0 flex items-center justify-between px-2.5 pointer-events-none z-10">
                     <span className={`text-[10px] font-bold text-white transition-opacity duration-300 ${
-                      employee?.active ? 'opacity-100' : 'opacity-0'
+                      isActive ? 'opacity-100' : 'opacity-0'
                     }`}>
                       Active
                     </span>
                     <span className={`text-[10px] font-bold text-white transition-opacity duration-300 ${
-                      employee?.active ? 'opacity-0' : 'opacity-100'
+                      isActive ? 'opacity-0' : 'opacity-100'
                     }`}>
                       Inactive
                     </span>
                   </div>
                   
-                  {/* Sliding Knob - Perfect Animation */}
+                  {/* Sliding Knob */}
                   <div 
                     className={`w-6 h-6 bg-white rounded-full shadow-lg transition-all duration-300 ease-in-out z-20 relative ${
-                      employee?.active ? 'translate-x-12' : 'translate-x-0'
+                      isActive ? 'translate-x-12' : 't  ranslate-x-0'
                     }`}
                   />
                 </button>
@@ -216,7 +235,7 @@ export default function EmployeeEdit() {
             <div className="pt-8 border-t-2 border-slate-200/60 bg-gradient-to-b from-slate-50/80 to-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-lg">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm text-slate-600">
                 <Link
-                  to="/dashboard/employees"
+                  to="/dashboard/employees-list"
                   className="group inline-flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-700 transition-all duration-300 hover:gap-3"
                 >
                   <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full group-hover:scale-125 transition-transform"></div>

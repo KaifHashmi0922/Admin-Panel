@@ -37,7 +37,7 @@ export const ProjectServices = {
   // Get All Projects
   // ==============================
   ProjectsGet: async () => {
-    const response = await api.get("/projects/");
+    const response = await api.get("/projects_list/");
     return response.data;
   },
 

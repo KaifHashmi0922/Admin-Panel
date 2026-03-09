@@ -1,6 +1,6 @@
 import api from "../axios";
 
-export const EmployeeServices = {
+export const EmployeesServices = {
 
   // ==============================
   // Register Employee
@@ -21,8 +21,8 @@ export const EmployeeServices = {
   // ==============================
   // Logout Employee
   // ==============================
-  EmployeeLogout: async () => {
-    const response = await api.post("/logout/");
+  EmployeeLogout: async (email) => {
+    const response = await api.post("/employee_logout/",email);
     return response.data;
   },
 
@@ -45,14 +45,15 @@ export const EmployeeServices = {
   // ==============================
   // Update Employee By ID
   // ==============================
-  EmployeeUpdateById: async (id, data) => {
-    const response = await api.patch("/employee_update/", {
-      id,
-      ...data,
-    });
+     EmployeeUpdateByEmail: async (email, data) => {
+    const payload = {
+      email: email,
+      ...data 
+    };
+
+    const response = await api.patch("/employee_update/", payload);
     return response.data;
   },
-
   // ==============================
   // Update Employee Profile
   // ==============================
@@ -67,44 +68,42 @@ export const EmployeeServices = {
   // ==============================
   // Search Employee
   // ==============================
-  EmployeeGetBySearchbar: async (query) => {
-    const response = await api.get("/employee-search/", {
-      params: { q: query },
-    });
-    return response.data;
-  },
+    EmployeeQuery: async (query) => {
+      const response = await api.get("/employee_query/", {
+        params: { q: query },
+      });
+      return response.data;
+    },
 
   // ==============================
   // Get All Employees
   // ==============================
-  EmployeeGet: async (data) => {
-    const response = await api.post("/employee/", data);
+  EmployeesList: async () => {
+    const response = await api.get("/employees_list/");
     return response.data;
   },
 
   // ==============================
   // Get Employee By ID
   // ==============================
-  EmployeesGetById: async (id) => {
-    const response = await api.get(`/employee/${id}/`);
+  EmployeesGetByEmail: async (email) => {
+    const response = await api.post("/employee_profile/", { email });
     return response.data;
   },
 
   // ==============================
   // Change Employee Status
   // ==============================
-  EmployeeStatusChange: async (id) => {
-    const response = await api.patch("/employee-status-change/", { id });
+   EmployeeStatusChange: async (email) => {
+    // Ensure the endpoint matches your Django URL config
+    const response = await api.patch("/employee_status_change/", { email });
     return response.data;
   },
-
   // ==============================
   // Delete Employee
   // ==============================
-  EmployeeDeleteById: async (id) => {
-    const response = await api.delete("/employee-delete/", {
-      data: { id },
-    });
+  EmployeeDeleteByEmail: async (email) => {
+    const response = await api.delete("/employee-delete/",email);
     return response.data;
   },
     EmployeeProfile: async () => {

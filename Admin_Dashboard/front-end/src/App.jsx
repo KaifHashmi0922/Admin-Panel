@@ -16,15 +16,17 @@ import VerifyOTP from "./page/auth_modification/VerifyOTP";
 
 /* Employee Pages */
 import EmployeeProfile from "./page/employee/EmployeeProfile";
-import Employees from "./page/employee/EmployeeDisplay";
+import EmployeesList from "./page/employee/EmployeeList";
 import EmployeeEdit from "./page/employee/EmployeeEdit";
+import EmployeeProfileView from "./page/employee/EmployeeProfileView";
 
 /* Project Pages */
 import ProjectRegister from "./page/project/ProjectRegister";
-import Projects from "./page/project/ProjectsLists";
+import ProjectsList from "./page/project/ProjectsLists";
 import ProjectDetails from "./page/project/ProjectDetails";
 import ProjectEdit from "./page/project/ProjectEdit";
 import EmployeePerformanceReport from "./page/Report/Report"
+import TeamReport from "./page/Report/TeamReport";
 
 function App() {
   return (
@@ -48,25 +50,28 @@ function App() {
 
             <Route index element={<DashboardHome />} />
              <Route path="employee/performance-report" element={<EmployeePerformanceReport />} />
+             <Route path="/dashboard/teams-report" element={<TeamReport />} />
+
 
             {/* ================= EMPLOYEE ================= */}
 
-            <Route path="employees" element={<Employees />} />
+            <Route path="employees-list" element={<EmployeesList />} />
             <Route path="employee-profile" element={<EmployeeProfile />} />
 
             {/* ADMIN ONLY */}
 
             {/* <Route element={<ProtectedRoute allowedRoles={["admin"]} />}> */}
               <Route path="employee/register" element={<Register />} />
-              <Route path="employee/edit/:id" element={<EmployeeEdit />} />
+              <Route path="employee/edit/:email" element={<EmployeeEdit />} />
+              <Route path="/dashboard/employee/view/:email" element={<EmployeeProfileView />} />
             {/* </Route> */}
 
             {/* ================= PROJECT ================= */}
 
            
-            <Route path="projects" element={<Projects />} />
+            <Route path="projects-list" element={<ProjectsList />} />
 
-            <Route path="project/:id" element={<ProjectDetails />} /> 
+            <Route path="project/:" element={<ProjectDetails />} /> 
 
 
             {/* ADMIN + MANAGER */}

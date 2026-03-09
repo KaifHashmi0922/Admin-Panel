@@ -76,7 +76,8 @@ def employee_query_view(request):
         }, status=500)
 
 
-
+def employee_query(reuquest):
+    return JsonResponse({"message":"hi"})
 
 
 
@@ -182,24 +183,26 @@ def employee_login(request):
 # EMPLOYEE UPDATE
 # ===============================
 
-@csrf_exempt
-def employee_update(request, email):
-
-    if request.method != "PUT":
-        return JsonResponse({"message": "Invalid method"}, status=405)
-
-    emp = Employee.objects.filter(email=email).first()
-
+@api_view(['PATCH'])
+def employee_update(request):
+    data=json.loads(request.body)
+    
+    email,eid =[ request.data.get("email"),request.data.get("id",None)] 
+       
+    data['status']=True if data.get('status').lower()=="active" else False
+    
+    emp = Employee.objects.filter(email=email).first() or Employee.objects.filter(id=eid).first()
     if not emp:
         return JsonResponse({"message": "Employee not found"}, status=404)
-
-    data = json.loads(request.body)
 
     serializer = EmployeeSerializer(emp, data=data, partial=True)
 
     if serializer.is_valid():
         serializer.save()
-        return JsonResponse({"message": "Employee updated successfully"})
+        return JsonResponse({
+            "message": "Employee updated successfully",
+            "data": serializer.data
+        })
 
     return JsonResponse(serializer.errors, status=400)
 
@@ -208,14 +211,13 @@ def employee_update(request, email):
 # EMPLOYEE LIST
 # ===============================
 
-@api_view(['GET'])
+# @api_view(['GET'])
 def employees_list(request):
-
-    employees = Employee.objects.all()
+    employees = Employee.objects.all()  
 
     serializer = EmployeeSerializer(employees, many=True)
 
-    return JsonResponse(serializer.data, safe=False)
+    return JsonResponse(serializer.data, safe=False,status=200)
 
 
 # ===============================
@@ -240,9 +242,10 @@ def employee_profile(request):
 # ===============================
 # EMPLOYEE DELETE
 # ===============================
-
+    
 @api_view(['DELETE'])
-def employee_delete(request, email):
+def employee_delete(request):
+    email=json.loads(request.body)
 
     emp = Employee.objects.filter(email=email).first()
 
@@ -260,9 +263,11 @@ def employee_delete(request, email):
 
 @api_view(['POST'])
 def employee_logout(request):
+    print("logout called")
+    email=json.loads(request.body)
 
-    email = request.data.get("email")
-
+    print(email)
+    
     emp = Employee.objects.filter(email=email).first()
 
     if not emp:
@@ -278,21 +283,26 @@ def employee_logout(request):
 # EMPLOYEE SOFT DELETE
 # ===============================
 
-@api_view(['PUT'])
-def employee_soft_delete(request, email):
-
+@api_view(['PUT', 'PATCH'])
+def employee_status_change(request):
+    email = request.data.get('email') or request.GET.get('email')
+    if not email:
+        return JsonResponse({"message": "Email required"}, status=400)
+    
     emp = Employee.objects.filter(email=email).first()
-
     if not emp:
         return JsonResponse({"message": "Employee not found"}, status=404)
-
-    emp.status = False
+    
+    # Toggle the status
+    new_status = not emp.status
+    emp.status = new_status
     emp.save()
-
-    return JsonResponse({"message": "Employee deactivated"})
-
-
-
+    
+    return JsonResponse({
+        "message": "Status updated",
+        "new_status": new_status,
+        "status_code": 200
+    })
 
 
 
@@ -338,7 +348,7 @@ def employee_change_password(request):
 # ===============================
 
 @csrf_exempt
-def project_create(request):
+def project_register(request):
 
     if request.method != "POST":
         return JsonResponse({"message": "Invalid method"}, status=405)
@@ -359,7 +369,7 @@ def project_create(request):
 # ===============================
 
 @api_view(['GET'])
-def project_list(request):
+def projects_list(request):
 
     projects = Project.objects.all()
 

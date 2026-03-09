@@ -20,15 +20,39 @@ export const AuthServices = {
   },
 
   // Login
-  EmployeeLogin: async (payload) => {
-    try {
-      const { data } = await api.post("/employee_login/", payload);
-      return data;
-    } catch (error) {
-      handleError(error, "Login failed");
-    }
-  },
+  // EmployeeLogin: async (payload) => {
+  //   try {
+  //     alert("....")
+  //     const { data } = await api.post("/employee_login/", payload);
+  //     if (data)
+  //       return data;
+  //     else
+  //       alert("server")
+  //   } catch (error) {
+  //     handleError(error, "Login failed");
+  //   }
+  // },
+EmployeeLogin: async (payload) => {
+  try {
+    const { data } = await api.post("/employee_login/", payload);
 
+    if (data) {
+      return data;
+    } else {
+      alert("Invalid response from server");
+    }
+
+  } catch (error) {
+
+    // If server is not responding
+    if (!error.response) {
+      alert("Server not working currently");
+    } else {
+      alert(error.response.data?.message || "Login failed");
+    }
+
+  }
+},
   // Send OTP
   EmployeeResetPassword: async (payload) => {
     try {
@@ -60,9 +84,9 @@ export const AuthServices = {
   },
 
   // Logout
-  EmployeeLogout: async () => {
+  EmployeeLogout: async (payload) => {
     try {
-      const { data } = await api.post("/employee_logout/");
+      const { data } = await api.post("/employee_logout/",payload);
       return data;
     } catch (error) {
       handleError(error, "Logout failed");

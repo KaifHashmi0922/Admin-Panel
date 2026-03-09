@@ -31,6 +31,8 @@ function useLogin() {
       const data = await AuthServices.EmployeeLogin(formData);
 
       console.log("Login Response:", data);
+      // console.log(user_data)
+      
 
       if (data?.access) {
         localStorage.setItem("access", data.access);
@@ -38,7 +40,8 @@ function useLogin() {
 
         // save user info
         if (data?.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("email",data.user.email);
+         
         }
         
         navigate("/dashboard");
@@ -59,6 +62,9 @@ function useLogin() {
     loading,
     showPassword,
     setShowPassword,
+  
+
+    
   };
 }
 

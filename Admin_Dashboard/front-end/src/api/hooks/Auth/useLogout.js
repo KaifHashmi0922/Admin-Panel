@@ -10,7 +10,10 @@ export default function useLogout() {
     try {
       setLoading(true);
 
-      await AuthServices.EmployeeLogout();
+    const email=localStorage.getItem("email");
+
+     const data= await AuthServices.EmployeeLogout(email);
+     alert("Logout !!")
 
       localStorage.clear();
       navigate("/login");
